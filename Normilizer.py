@@ -1,12 +1,16 @@
 import json
 import os
 import sys
-# from spacy.lang.ru import Russian
-# from spacy_russian_tokenizer import RussianTokenizer, MERGE_PATTERNS
+from spacy.lang.ru import Russian
+from spacy_russian_tokenizer import RussianTokenizer, MERGE_PATTERNS
+import nltk
 
 ARTICLES_JSON_PATH = 'data/articles.json'
+
+
 def eprint(msg):
     sys.stderr(msg)
+
 
 def join_nonempty(dir):
     nonempty_articles = {}
@@ -33,15 +37,30 @@ def join_nonempty(dir):
         f.write(json_str)
 
 
-def count_simple_stats(text):
+def count_simple_stats():
     with open('data/articles.json', 'r', encoding='utf8') as f:
         json_str = f.readlines()[0]
     articles = json.loads(json_str)
-    # for title in articles:
-    #     mt = MosesTokenizer()
-    #     tokens = mt.tokenize(text)
+    nlp = Russian()
+    russian_tokenizer = RussianTokenizer(nlp, MERGE_PATTERNS)
+    nlp.add_pipe(russian_tokenizer, name='russian_tokenizer')
+    texts_count = 0
+    sent_count = 0
+    words_count = 0
+    for title in articles:
+        text = articles[title][0].strip()
+        texts_count += 1
+        sents = nltk.sent_tokenize(text, language="russian")
+        sent_count += len(sents)
+        tokens = nlp(text)
+        words_count += len(tokens)
+        # print([token.text for token in tokens])
+    print("Texts count:", texts_count)
+    print("Sentences count:", sent_count)
+    print("Words count:", words_count)
 
 
 if __name__ == '__main__':
     backup_path = 'parsing_backup'
-    join_nonempty(backup_path)
+    # join_nonempty(backup_path)
+    count_simple_stats()
