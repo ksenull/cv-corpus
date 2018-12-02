@@ -11,3 +11,4 @@ Roughly speaking:
 * Texts count: 801
 * Sentences count: 9785
 * Words count: 196663
+* Symbols count: 851004

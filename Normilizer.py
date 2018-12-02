@@ -47,6 +47,7 @@ def count_simple_stats():
     texts_count = 0
     sent_count = 0
     words_count = 0
+    symbols_count = 0
     for title in articles:
         text = articles[title][0].strip()
         texts_count += 1
@@ -54,10 +55,13 @@ def count_simple_stats():
         sent_count += len(sents)
         tokens = nlp(text)
         words_count += len(tokens)
-        # print([token.text for token in tokens])
+        symbols = [symb for symb in text if symb != ' ' and symb != '\n']
+        symbols_count += len(symbols)
+        # print([token.txt for token in tokens])
     print("Texts count:", texts_count)
     print("Sentences count:", sent_count)
     print("Words count:", words_count)
+    print("Symbols count:", symbols_count)
 
 
 if __name__ == '__main__':
