@@ -1,0 +1,47 @@
+import json
+import os
+import sys
+# from spacy.lang.ru import Russian
+# from spacy_russian_tokenizer import RussianTokenizer, MERGE_PATTERNS
+
+ARTICLES_JSON_PATH = 'data/articles.json'
+def eprint(msg):
+    sys.stderr(msg)
+
+def join_nonempty(dir):
+    nonempty_articles = {}
+    articles_count = 0
+    for filename in os.listdir(dir):
+        print(filename)
+    # for filename in ['0.json']:
+        lines = []
+        with open(os.path.join(dir, filename), 'r', encoding='utf8') as f:
+            lines = f.readlines()
+        assert len(lines) == 1
+        articles = json.loads(lines[0])
+        articles_count += len(articles)
+        for title in articles:
+            assert len(articles[title]) == 1
+            if len(articles[title]) != 0 and len(articles[title][0]) != 0:
+                nonempty_articles[title] = [*articles[title]]
+
+    print(len(nonempty_articles))
+    print(articles_count)
+
+    json_str = json.dumps(nonempty_articles, ensure_ascii=False)
+    with open(ARTICLES_JSON_PATH, 'w+', encoding='utf8') as f:
+        f.write(json_str)
+
+
+def count_simple_stats(text):
+    with open('data/articles.json', 'r', encoding='utf8') as f:
+        json_str = f.readlines()[0]
+    articles = json.loads(json_str)
+    # for title in articles:
+    #     mt = MosesTokenizer()
+    #     tokens = mt.tokenize(text)
+
+
+if __name__ == '__main__':
+    backup_path = 'parsing_backup'
+    join_nonempty(backup_path)
